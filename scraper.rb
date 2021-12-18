@@ -4,6 +4,7 @@ require 'date'
 require 'json'
 
 url = 'https://developmenti.brisbane.qld.gov.au/Geo/GetApplicationFilterResults'
+info_url = 'https://developmenti.brisbane.qld.gov.au/Home/FilterDirect?filters=DANumber='
 
 resp = Faraday.post(url) do |req|
     req.headers['Content-Type'] = 'application/json'
@@ -17,6 +18,7 @@ raw['features'][1..-1].each do |set|
 	record['council_reference'] = set['application_number']
 	record['address'] = set['description'].split(" - ")[0]
 	record['description'] = set['description'].split(" - ")[1..-1].join(" - ")
+	record['info_url'] = info_url + record['council_reference']
 	record['date_received'] = set['date_received']
 	record['date_scraped'] = Date.today.to_s
 	puts "Saving #{record['council_reference']}, #{record['address']}"
